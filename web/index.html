@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183c35">
+  <meta name="description" content="기업교육 운영자가 가상 문의를 접수하고 공식 자료 기반 분류부터 답변 검토, 승인, 처리까지 시연하는 MOA 운영 콘솔입니다.">
+  <title>MOA 운영 콘솔 | 기업교육 문의 접수·검토·처리</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a href="#workspace" class="skip-link">문의 실습으로 이동</a>
+  <header class="topbar">
+    <div class="wrap bar-inner">
+      <a class="identity" href="index.html" aria-label="MOA 운영 콘솔 첫 화면">
+        <span class="mark" aria-hidden="true">m</span><span class="name-group"><strong>MOA</strong><small>운영 콘솔 · T13</small></span>
+      </a>
+      <nav class="nav" aria-label="메인 메뉴"><a href="#workspace">문의 접수</a><a href="#reviewDesk">운영자 검토</a><a href="#policy">공식 안내</a><a href="#scope">구현 범위</a></nav>
+      <span class="version">DEMO 02 / 중간 점검 2차</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro-section">
+      <div class="wrap intro-grid">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-rule"></span>EDUCATION OPERATIONS · SERVICE PROTOTYPE</p>
+          <h1>문의는 한곳에,<br><em>안내는 근거 위에.</em></h1>
+          <p class="lead">기업교육 운영자가 <strong>교육생 문의를 접수하고 공식 자료에 따라 분류</strong>한 뒤, 운영자가 답변을 검토·승인하고 처리 상태를 관리하는 시연용 웹앱입니다.</p>
+          <div class="hero-actions"><a class="primary-link" href="#workspace">직접 문의 처리해 보기 <span aria-hidden="true">↘</span></a><a class="secondary-link" href="#policy">판단 근거 보기 <span aria-hidden="true">↗</span></a></div>
+          <p class="disclaimer"><span class="disclaimer-dot" aria-hidden="true"></span>가상 문의만 사용 · 규칙 기반 데모 · 데모용 승인 / 실제 발송 없음</p>
+        </div>
+        <aside class="concept" aria-label="업무 흐름">
+          <p class="concept-title">하나의 질문이 처리되는 방법 <span>WORKFLOW</span></p>
+          <div class="stage"><span class="stage-number">01</span><div><strong>문의 접수</strong><p>가상 교육생 문의를 등록합니다.</p></div><span class="stage-status">이번 버전</span></div>
+          <div class="stage"><span class="stage-number">02</span><div><strong>근거 기반 분류</strong><p>공식 안내가 있는지 먼저 판단합니다.</p></div><span class="stage-status">이번 버전</span></div>
+          <div class="stage"><span class="stage-number">03</span><div><strong>운영자 검토·처리</strong><p>답변을 확인·수정하고 승인·상태를 기록합니다.</p></div><span class="stage-status">이번 버전</span></div>
+          <div class="concept-foot"><span class="pulse"></span>검토·승인·완료 표시는 데모 상태이며, 답변은 실제 발송되지 않습니다.</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="metric-section wrap" aria-label="현재 문의 요약">
+      <article class="metric"><span>접수된 가상 문의</span><div class="metric-number" id="totalCount">0 <small>건</small></div><p>이 브라우저에 저장된 시연 데이터</p></article>
+      <article class="metric"><span>공식 근거가 있는 문의</span><div class="metric-number" id="commonCount">0 <small>건</small></div><p>답변 초안 표시 가능</p></article>
+      <article class="metric"><span>추가 확인이 필요한 문의</span><div class="metric-number" id="reviewCount">0 <small>건</small></div><p>추측 답변 대신 확인 대상</p></article>
+      <article class="metric"><span>처리 완료 표시</span><div class="metric-number" id="completedCount">0 <small>건</small></div><p>데모 승인 이후에만 완료 가능</p></article>
+    </section>
+
+    <section id="workspace" class="workspace wrap" aria-labelledby="workTitle">
+      <div class="section-heading"><div><p class="eyebrow small">01 / PRACTICE DESK</p><h2 id="workTitle">접수부터 검토·처리까지</h2><p>문의 등록 → 근거 확인 → 초안 저장·승인·처리를 순서대로 체험해 보세요.</p></div><span class="scope-pill">접수·분류·검토·처리 시연</span></div>
+      <div class="workspace-grid">
+        <section class="panel composer" aria-labelledby="newTitle">
+          <div class="panel-heading"><span class="step-circle">1</span><h3 id="newTitle">새 문의 접수</h3></div>
+          <p class="panel-caption">먼저 가상 문의를 고르거나 직접 입력해 보세요.</p>
+          <div class="quick-examples" aria-label="예시 문의 선택">
+            <button class="example" type="button" data-example="assignment">과제 제출 위치</button>
+            <button class="example" type="button" data-example="project">최종 프로젝트 방식</button>
+            <button class="example" type="button" data-example="attendance">개인 출결 확인</button>
+          </div>
+          <form id="inquiryForm" novalidate>
+            <label for="inquiryText" class="input-label">교육생 문의 <span>가상 데이터만 입력</span></label>
+            <textarea id="inquiryText" name="inquiryText" maxlength="280" rows="6" placeholder="예: 과제를 어디에서 제출하나요?" aria-describedby="inputHint inputError"></textarea>
+            <div class="input-footer"><span id="inputHint">실명·전화번호·실제 출결 정보는 입력하지 마세요.</span><span id="charCount">0 / 280</span></div>
+            <p id="inputError" class="input-error" role="alert" hidden></p>
+            <button class="submit-button" type="submit">문의 등록하고 분류하기 <span aria-hidden="true">↗</span></button>
+          </form>
+          <div class="rule-note"><strong>분류 방식</strong><p>정해진 키워드와 공식 자료만 활용하는 데모입니다. 문장을 자유롭게 이해하는 AI가 아니며, 애매한 경우에는 ‘정보 확인 필요’로 보수적으로 분류합니다.</p></div>
+        </section>
+
+        <section class="panel inbox" aria-labelledby="listTitle">
+          <div class="panel-heading inbox-head"><div class="head-inline"><span class="step-circle">2</span><h3 id="listTitle">접수된 문의</h3></div><button class="reset-button" type="button" id="resetBtn">예시 데이터 초기화</button></div>
+          <div class="list-toolbar"><label for="filterSelect">분류 필터</label><select id="filterSelect"><option value="all">전체 문의</option><option value="common">공통 안내</option><option value="info">정보 확인 필요</option><option value="private">담당자 확인 필요</option><option value="personal">개별 상담</option></select></div>
+          <div class="list-toolbar status-toolbar"><label for="statusFilter">처리 상태</label><select id="statusFilter"><option value="all">모든 상태</option><option value="received">접수</option><option value="in_review">검토 중</option><option value="approved">승인됨</option><option value="needs_info">추가 확인 요청</option><option value="completed">처리 완료</option></select></div>
+          <ul class="ticket-list" id="ticketList" aria-label="문의 목록"></ul>
+          <div class="empty-list" id="emptyList" hidden>이 분류에 해당하는 문의가 없어요. 필터를 바꾸거나 새 문의를 등록해 보세요.</div>
+          <p class="list-help">문의는 이 브라우저에만 임시 저장됩니다. 다른 사용자와 공유되는 운영 데이터베이스가 아닙니다.</p>
+        </section>
+      </div>
+      <section class="review-panel" id="reviewDesk" aria-labelledby="detailTitle">
+        <div class="review-heading"><div class="head-inline"><span class="step-circle">3</span><h3 id="detailTitle">분류 결과와 운영자 검토</h3></div><span class="small-flag">데모용 처리 · 자동 발송 없음</span></div>
+        <div id="ticketDetail" class="ticket-detail" aria-live="polite"></div>
+        <form id="reviewForm" class="review-form" novalidate>
+          <div class="review-form-head">
+            <div><p class="eyebrow small">03 / HUMAN REVIEW</p><h4>답변을 직접 검토하고 처리하기</h4><p>공식 근거가 없는 문의는 승인하지 않고 ‘추가 확인 요청’으로 보류합니다.</p></div>
+            <span id="reviewStatus" class="workflow-status" role="status">접수</span>
+          </div>
+          <div class="review-fields">
+            <div><label class="input-label" for="replyDraft">답변 초안 <span>최대 600자 · 실제 발송되지 않음</span></label>
+              <textarea id="replyDraft" maxlength="600" rows="4" placeholder="공식 근거가 있는 경우에만 답변을 작성합니다."></textarea>
+              <p class="review-helper" id="draftHint">초안을 저장한 뒤 확인하고 승인하세요.</p></div>
+            <div><label class="input-label" for="reviewNote">담당자 검토 메모 <span>최대 300자</span></label>
+              <textarea id="reviewNote" maxlength="300" rows="4" placeholder="예: 최종 프로젝트 진행 방식의 공식 안내 확인 요청"></textarea>
+              <p class="review-helper">검토 메모는 공개·전송되지 않고 현재 브라우저에만 보관됩니다.</p></div>
+          </div>
+          <label class="review-confirm"><input type="checkbox" id="sourceConfirmed"><span>공식 안내자료와 답변 초안의 일치 여부를 직접 확인했습니다. <small>(공통 안내에서만 승인 가능)</small></span></label>
+          <p class="review-error" id="reviewError" role="alert" hidden></p>
+          <div class="review-actions">
+            <button type="button" class="workflow-button secondary" id="saveDraftBtn">① 초안 저장</button>
+            <button type="button" class="workflow-button caution" id="requestInfoBtn">추가 확인 요청</button>
+            <button type="button" class="workflow-button secondary" id="approveBtn">② 검토 승인</button>
+            <button type="button" class="workflow-button primary" id="completeBtn">③ 처리 완료</button>
+          </div>
+          <p class="workflow-help" id="workflowHelp" aria-live="polite">초안 저장 → 공식 근거 확인 후 승인 → 처리 완료 순서입니다. 답변을 자동 전송하지 않습니다.</p>
+        </form>
+      </section>
+    </section>
+
+    <section class="references wrap" id="policy" aria-labelledby="referenceTitle">
+      <div class="section-heading"><div><p class="eyebrow small">02 / OFFICIAL SOURCE</p><h2 id="referenceTitle">앱이 참고하는 가상 공식 자료</h2><p>답변의 출처와 알 수 없는 범위를 사용자에게 공개합니다.</p></div></div>
+      <div class="ref-grid"><article><span class="ref-index">자료 01 / 확인된 안내</span><h3>과제 제출 위치</h3><p>“과제는 교육 플랫폼의 ‘과제 제출’ 메뉴에서 제출한다.”</p><span class="ref-foot good">공통 안내의 근거</span></article><article><span class="ref-index">자료 02 / 세부 내용 미정</span><h3>최종 프로젝트 진행 방식</h3><p>“최종 프로젝트의 세부 진행 방식은 아직 문서에 정리되지 않았다.”</p><span class="ref-foot warn">일정·절차 추정 금지</span></article></div>
+    </section>
+    <section class="scope-section" id="scope"><div class="wrap scope-grid"><div><p class="eyebrow small">03 / RELEASE SCOPE</p><h2>이 버전에서 되는 것,<br>아직 되지 않는 것.</h2></div><div><p><strong>완료된 1차:</strong> 문의 접수·목록·규칙 기반 분류, 공식 근거와 답변 가능 여부 확인.</p><p><strong>이번 2차:</strong> 운영자 초안 편집·저장·데모 승인, 처리 완료·추가 확인 요청, 상태 필터 및 로컬 상태 복원.</p><p><strong>구현하지 않음:</strong> 실제 AI 연동, 실제 출결 조회, 외부 전송, 다중 사용자 공유, 실제 개인정보 처리.</p><div class="scope-links"><a href="README.md">실행 및 검증 안내 ↗</a><a href="https://momoorr.github.io/My-profile/bra/app/">BR-B 연구 점검기 ↗</a></div></div></div></section>
+  </main>
+  <footer class="footer"><div class="wrap footer-grid"><div><strong>MOA</strong><span>교육 운영 업무를 위한 근거 중심 데모</span></div><span>T13 · 중간 점검 2차 · 시연용 데이터</span></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
