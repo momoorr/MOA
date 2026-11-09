@@ -9,6 +9,8 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
+  <script src="live-config.js" defer></script>
+  <script src="live.js" defer></script>
 </head>
 <body>
   <a href="#workspace" class="skip-link">문의 실습으로 이동</a>
@@ -17,7 +19,7 @@
       <a class="identity" href="index.html" aria-label="MOA 운영 콘솔 첫 화면">
         <span class="mark" aria-hidden="true">m</span><span class="name-group"><strong>MOA</strong><small>운영 콘솔 · T13</small></span>
       </a>
-      <nav class="nav" aria-label="메인 메뉴"><a href="#workspace">문의 접수</a><a href="#reviewDesk">운영자 검토</a><a href="#policy">공식 안내</a><a href="#scope">구현 범위</a></nav>
+      <nav class="nav" aria-label="메인 메뉴"><a href="#workspace">문의 접수</a><a href="#reviewDesk">데모 검토</a><a href="#liveDesk">실제 AI 결과</a><a href="#policy">공식 안내</a><a href="#scope">구현 범위</a></nav>
       <span class="version">DEMO 02 / 중간 점검 2차</span>
     </div>
   </header>
@@ -108,11 +110,74 @@
       </section>
     </section>
 
+    <!-- Separate authenticated workflow. Never mix real records with the local demo above. -->
+    <section class="live-section wrap" id="liveDesk" aria-labelledby="liveTitle">
+      <div class="section-heading">
+        <div><p class="eyebrow small">04 / AUTHENTICATED OPERATOR · REAL AI DATA</p>
+          <h2 id="liveTitle">실제 AI 문의 검토</h2>
+          <p>Make AI 처리 결과를 Supabase에서 조회합니다. 이 영역은 인증된 운영자 전용이며, 위 규칙 기반 데모와 분리돼 있습니다.</p>
+        </div>
+        <span class="scope-pill">실데이터 연결 · 서버 설정 필요</span>
+      </div>
+      <div class="live-panel">
+        <p class="live-disclaimer">가상 QA 데이터만 사용 · 운영자 로그인 필요 · 승인 기록은 실제 응답 발송이 아님 · 본문/비밀키 공개 금지</p>
+        <p id="liveSetupNotice" class="live-setup" hidden></p>
+        <div id="liveLoginArea">
+          <div class="live-section-subtitle"><h3>운영자 로그인</h3><p>Supabase Auth 계정과 서버의 운영자 허용 목록이 모두 일치해야 조회할 수 있어요.</p></div>
+          <form class="live-login-form" id="liveLoginForm" autocomplete="on">
+            <label>이메일<input id="liveEmail" type="email" autocomplete="username" required maxlength="254" placeholder="운영자 계정 이메일"></label>
+            <label>비밀번호<input id="livePassword" type="password" autocomplete="current-password" required placeholder="비밀번호"></label>
+            <button class="submit-button" type="submit">인증하고 실제 문의 조회</button>
+          </form>
+          <p id="liveAuthMessage" class="live-feedback" role="status" aria-live="polite"></p>
+          <p class="live-help">세션 토큰은 브라우저 메모리에만 보관하며 새로고침하면 다시 로그인해야 합니다. Supabase 비밀키를 입력하지 마세요.</p>
+        </div>
+        <div id="liveDeskArea" hidden>
+          <div class="live-toolbar"><span id="liveSessionLabel" class="live-session"></span>
+            <div class="live-toolbar-actions"><button type="button" id="liveRefresh" class="workflow-button secondary">새로고침</button><button type="button" id="liveLogout" class="workflow-button secondary">로그아웃</button></div>
+          </div>
+          <div class="live-grid">
+            <aside class="live-inbox">
+              <div class="live-inbox-head"><h3>실제 문의 목록</h3><span id="liveCount"></span></div>
+              <label class="live-filter-label" for="liveStatusFilter">검토 상태</label>
+              <select id="liveStatusFilter" class="live-filter">
+                <option value="all">전체</option><option value="검토 대기">검토 대기</option><option value="검토 중">검토 중</option><option value="추가 확인 요청">추가 확인 요청</option><option value="승인됨">승인됨</option><option value="처리 완료">처리 완료</option>
+              </select>
+              <ul id="liveTicketList" class="live-ticket-list" aria-label="실제 AI 문의 목록"></ul>
+            </aside>
+            <div class="live-detail-area">
+              <h3>AI 분석 결과와 운영자 검토</h3>
+              <dl id="liveDetail" class="live-facts"></dl>
+              <form id="liveReviewForm" class="live-review-form" hidden>
+                <div class="review-fields">
+                  <label class="input-label">운영자 답변 초안 <small>(최대 600자)</small>
+                    <textarea id="liveDraft" maxlength="600" rows="4" placeholder="공식 안내를 직접 대조한 뒤 수정하세요."></textarea>
+                  </label>
+                  <label class="input-label">검토 메모 <small>(최대 300자)</small>
+                    <textarea id="liveNote" maxlength="300" rows="4" placeholder="확인한 근거 또는 담당자 확인 요청 사유"></textarea>
+                  </label>
+                </div>
+                <label class="review-confirm"><input id="liveConfirmed" type="checkbox"><span>승인된 공식 자료의 원문과 답변을 직접 대조했습니다. (서버의 자동 사실 검증을 의미하지 않음)</span></label>
+                <p id="liveReviewHelp" class="review-helper"></p>
+                <div class="review-actions">
+                  <button type="button" id="liveSave" class="workflow-button secondary">① 초안 저장</button>
+                  <button type="button" id="liveRequest" class="workflow-button caution">추가 확인 요청</button>
+                  <button type="button" id="liveApprove" class="workflow-button secondary">② 검토 승인</button>
+                  <button type="button" id="liveComplete" class="workflow-button primary">③ 처리 완료</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <p id="liveResult" class="live-feedback" role="status" aria-live="polite" hidden></p>
+      </div>
+    </section>
+
     <section class="references wrap" id="policy" aria-labelledby="referenceTitle">
       <div class="section-heading"><div><p class="eyebrow small">02 / OFFICIAL SOURCE</p><h2 id="referenceTitle">앱이 참고하는 가상 공식 자료</h2><p>답변의 출처와 알 수 없는 범위를 사용자에게 공개합니다.</p></div></div>
       <div class="ref-grid"><article><span class="ref-index">자료 01 / 확인된 안내</span><h3>과제 제출 위치</h3><p>“과제는 교육 플랫폼의 ‘과제 제출’ 메뉴에서 제출한다.”</p><span class="ref-foot good">공통 안내의 근거</span></article><article><span class="ref-index">자료 02 / 세부 내용 미정</span><h3>최종 프로젝트 진행 방식</h3><p>“최종 프로젝트의 세부 진행 방식은 아직 문서에 정리되지 않았다.”</p><span class="ref-foot warn">일정·절차 추정 금지</span></article></div>
     </section>
-    <section class="scope-section" id="scope"><div class="wrap scope-grid"><div><p class="eyebrow small">03 / RELEASE SCOPE</p><h2>이 버전에서 되는 것,<br>아직 되지 않는 것.</h2></div><div><p><strong>완료된 1차:</strong> 문의 접수·목록·규칙 기반 분류, 공식 근거와 답변 가능 여부 확인.</p><p><strong>이번 2차:</strong> 운영자 초안 편집·저장·데모 승인, 처리 완료·추가 확인 요청, 상태 필터 및 로컬 상태 복원.</p><p><strong>구현하지 않음:</strong> 실제 AI 연동, 실제 출결 조회, 외부 전송, 다중 사용자 공유, 실제 개인정보 처리.</p><div class="scope-links"><a href="README.md">실행 및 검증 안내 ↗</a><a href="https://momoorr.github.io/My-profile/bra/app/">BR-B 연구 점검기 ↗</a></div></div></div></section>
+    <section class="scope-section" id="scope"><div class="wrap scope-grid"><div><p class="eyebrow small">03 / RELEASE SCOPE</p><h2>이 버전에서 되는 것,<br>아직 되지 않는 것.</h2></div><div><p><strong>완료된 1차:</strong> 문의 접수·목록·규칙 기반 분류, 공식 근거와 답변 가능 여부 확인.</p><p><strong>이번 2차:</strong> 운영자 초안 편집·저장·데모 승인, 처리 완료·추가 확인 요청, 상태 필터 및 로컬 상태 복원.</p><p><strong>실데이터 통합(별도 영역):</strong> Supabase 운영자 인증·조회·검토 API를 추가 구성 중입니다. 서버 배포와 접근 정책 검증 후 이용할 수 있으며 기존 데모와 데이터가 섞이지 않습니다.</p><p><strong>구현하지 않음:</strong> 실제 출결 조회, 교육생에 대한 자동 답변 전송, 공개 데이터 조회, 실사용자 검증.</p><div class="scope-links"><a href="README.md">실행 및 검증 안내 ↗</a><a href="https://momoorr.github.io/My-profile/bra/app/">BR-B 연구 점검기 ↗</a></div></div></div></section>
   </main>
   <footer class="footer"><div class="wrap footer-grid"><div><strong>MOA</strong><span>교육 운영 업무를 위한 근거 중심 데모</span></div><span>T13 · 중간 점검 2차 · 시연용 데이터</span></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
